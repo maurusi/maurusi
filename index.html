@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1em;
+}
+
+main {
+    padding: 1em;
+}
+
+.post {
+    border: 1px solid #ccc;
+    padding: 1em;
+    margin-bottom: 1em;
+}
+
+.replies {
+    margin-top: 1em;
+}
+
+.reply {
+    border: 1px solid #eee;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.reply-form {
+    margin-top: 1em;
+}
+
+textarea {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+button {
+    padding: 0.5em;
+    cursor: pointer;
+}
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+    const submitPostBtn = document.getElementById('submit-post-btn');
+    submitPostBtn.addEventListener('click', submitPost);
+
+    const forumPosts = document.getElementById('forum-posts');
+    forumPosts.addEventListener('click', handlePostClick);
+});
+
+function submitPost() {
+    const postContent = document.getElementById('post-content').value;
+
+    if (postContent.trim() === '') {
+        alert('Please enter a post before submitting.');
+        return;
+    }
+
+    // Create a new post element
+    const postElement = createPostElement(postContent);
+
+    // Append the post to the forum
+    const forumPosts = document.getElementById('forum-posts');
+    forumPosts.appendChild(postElement);
+
+    // Clear the input field
+    document.getElementById('post-content').value = '';
+}
+
+function createPostElement(content) {
+    const postElement = document.createElement('div');
+    postElement.className = 'post';
+    postElement.innerHTML = `
+        <p>${content}</p>
+        <p><small>Posted on: ${getFormattedDate()}</small></p>
+        <button class="reply-btn">Reply</button>
+        <div class="replies"></div>
+        <div class="reply-form" style="display:none;">
+            <textarea class="reply-content" placeholder="Write your reply..."></textarea>
+            <button class="submit-reply-btn">Submit</button>
+        </div>
+    `;
+    return postElement;
+}
+
+function handlePostClick(event) {
+    const target = event.target;
+
+    if (target.classList.contains('reply-btn')) {
+        const postElement = target.closest('.post');
+        const replyForm = postElement.querySelector('.reply-form');
+        replyForm.style.display = 'block';
+    }
+
+    if (target.classList.contains('submit-reply-btn')) {
+        const postElement = target.closest('.post');
+        const replyContent = postElement.querySelector('.reply-content').value;
+
+        if (replyContent.trim() === '') {
+            alert('Please enter a reply before submitting.');
+            return;
+        }
+
+        const replyElement = createReplyElement(replyContent);
+
+        // Append the reply to the post
+        const repliesContainer = postElement.querySelector('.replies');
+        repliesContainer.appendChild(replyElement);
+
+        // Clear the input field
+        postElement.querySelector('.reply-content').value = '';
+
+        // Hide the reply form
+        postElement.querySelector('.reply-form').style.display = 'none';
+    }
+}
+
+function createReplyElement(content) {
+    const replyElement = document.createElement('div');
+    replyElement.className = 'reply';
+    replyElement.innerHTML = `
+        <p>${content}</p>
+        <p><small>Posted on: ${getFormattedDate()}</small></p>
+    `;
+    return replyElement;
+}
+
+function getFormattedDate() {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date().toLocaleDateString(undefined, options);
+}
+    </script>
+    <title>Forum</title>
+</head>
+<body>
+    <header>
+        <h1>Maurus Mauruz</h1>
+    </header>
+    <main id="forum-posts">
+        <!-- Display forum posts here -->
+        <div class="post" data-id="1">
+            <p>je ni lazima tuwe na wasiwasi Juu ya maendeleo ya AI na athari zake katika jamii?</p>
+            <p><small>Posted on: December 7, 2023</small></p>
+            <button class="reply-btn">Reply</button>
+            <div class="replies">
+                <!-- Display replies here -->
+                <div class="reply">
+                    <p>A reply to the post.</p>
+                    <p><small>Posted on: December 8, 2023</small></p>
+                </div>
+            </div>
+            <div class="reply-form" style="display:none;">
+                <!-- Form to submit a new reply -->
+                <textarea class="reply-content" placeholder="Write your reply..."></textarea>
+                <button class="submit-reply-btn">Submit</button>
+            </div>
+        </div>
+    </main>
+    <div id="post-form">
+        <!-- Form to submit a new post -->
+        <textarea id="post-content" placeholder="Write your post..."></textarea>
+        <button id="submit-post-btn">Submit</button>
+    </div>
+    <script src="script.js"></script>
+</body>
